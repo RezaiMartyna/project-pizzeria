@@ -28,4 +28,7 @@
             "off"
         ]
     }
+    "globals": {
+      "Handlebars": false
+    }
 }

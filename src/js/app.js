@@ -1,8 +1,68 @@
 import {settings, select, templates, classNames} from './settings.js';
 import Product from './components/Product.js';
 import Cart from './components/Cart.js';
+import Booking from './components/Booking.js';
 
 const app = {
+  initPages: function(){
+    const thisApp = this;
+
+    thisApp.pages = document.querySelector(select.containerOf.pages).children;
+    thisApp.navLinks = document.querySelectorAll(select.nav.links);
+
+    const idFromHash = window.location.hash.replace('#/', '');
+
+    let pageMatchingHash = thisApp.pages[0].id;
+
+    for(let page of thisApp.pages){
+      if(page.id == idFromHash){
+        pageMatchingHash = page.id;
+        break;
+      }
+    }
+
+    thisApp.activatePage(pageMatchingHash);
+
+    for(let link of thisApp.navLinks){
+      link.addEventListener('click', function(event){
+        const clickedElement = this;
+        event.preventDefault();
+
+        /*get page id from href attribute */
+        /*W stałej id zapisujemy atrybut 'href' kliknietego elementu w którym zamienimy znak # na pusty ciag znaków*/
+        const id = clickedElement.getAttribute('href').replace ('#', '');
+
+        /*run thisApp.activatePage with that id */
+        thisApp.activatePage(id);
+
+        /*change URL hash */
+        window.location.hash = '#/' + id;
+      });
+    }
+
+  },
+
+  activatePage: function(pageId){
+    const thisApp = this;
+
+    /*add class 'active' to mathing pages, remove from non-matching*/
+    for(let page of thisApp.pages){
+      page.classList.toggle(classNames.pages.active, page.id == pageId);
+    }
+    /*add class 'active' to mathing links, remove from non-matching*/
+
+    /*dla każdego z linków zapisanych w thisApp.navLink  */
+    for(let link of thisApp.navLinks){
+      /*chcemy dodać lub odjąć */
+      link.classList.toggle(
+        /*klasę zdefiniowaną w classNames.nav.active*/
+        classNames.nav.active,
+        /*w zależnosći od tego czy atrybut 'href' tego linka jest równy #
+        oraz id podstrony podanej jako argument metody ActivatePage */
+        link.getAttribute('href') == '#' + pageId
+      );
+    }
+  },
 
   initMenu: function () {
     const thisApp = this;
@@ -45,6 +105,15 @@ const app = {
     });
   },
 
+  initBooking: function () {
+    const thisApp = this;
+
+    thisApp.bookingWrapper = document.querySelector(select.containerOf.booking);
+
+    new Booking(thisApp.bookingWrapper);
+
+  },
+
   init: function () {
     const thisApp = this;
     console.log('*** App starting ***');
@@ -53,10 +122,15 @@ const app = {
     console.log('settings:', settings);
     console.log('templates:', templates);
 
+    thisApp.initPages();
+
     thisApp.initData();
 
     thisApp.initCart();
+
+    thisApp.initBooking();
   },
+
 
 
 };

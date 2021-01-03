@@ -10,6 +10,7 @@ class Booking {
 
 
     thisBooking.tablePicked = null;
+
     thisBooking.render(wrapper);
     thisBooking.initWidgets();
     thisBooking.getData();
@@ -178,7 +179,7 @@ class Booking {
           if (clickedElement.classList.contains('selected')) {
             clickedElement.classList.remove('selected');
             thisBooking.tablePicked = null;
-            console.log('remove table2', thisBooking.tablePicked);
+            //console.log('remove table2', thisBooking.tablePicked);
           }
           else {
             for (let table of thisBooking.dom.tables) {
@@ -186,7 +187,7 @@ class Booking {
               clickedElement.classList.add('selected');
               const tableId = clickedElement.getAttribute('data-table');
               thisBooking.tablePicked = tableId;
-              console.log('add table', thisBooking.tablePicked);
+              //console.log('add table', thisBooking.tablePicked);
             }
           }
         }
@@ -228,6 +229,32 @@ class Booking {
 
     thisBooking.floorPlan = document.querySelector('.floor-plan');
 
+    thisBooking.dom.orderButton = thisBooking.dom.wrapper.querySelector(select.booking.orderButton);
+
+    thisBooking.dom.starters = thisBooking.dom.wrapper.querySelector(select.booking.starters);
+
+    thisBooking.starters = [];
+    console.log('starter', thisBooking.starters);
+  }
+
+  sendBooking(){
+    const thisBooking = this;
+
+    const url = settings.db.url + '/' + settings.db.booking;
+
+    const payload = {
+      //date: data wybrana w datePickerze
+      //hour: godzina wybrana w hourPickerze (w formacie HH:ss)
+      //table: numer wybranego stolika (lub null jeśli nic nie wybrano)
+      //duration: liczba godzin wybrana przez klienta
+      //ppl: liczba osób wybrana przez klienta
+      starters: [],
+      //phone: numer telefonu z formularza,
+      //address: adres z formularza
+    };
+
+
+
 
   }
 
@@ -240,13 +267,43 @@ class Booking {
     thisBooking.datePicker = new DatePicker(thisBooking.dom.datePicker);
     thisBooking.hourPicker = new HourPicker(thisBooking.dom.hourPicker);
 
+
+
     thisBooking.dom.wrapper.addEventListener('updated', function () {
       thisBooking.updateDOM();
+      thisBooking.tablePicked = null;
+      for (let table of thisBooking.dom.tables) {
+        table.classList.remove('selected');
+      }
     });
 
-    //thisBooking.floorPlan.addEventListener('click', function () {
-    //thisBooking.initTables();
-    //});
+    thisBooking.dom.starters.addEventListener('click', function (event) {
+
+      const clickedElement = event.target;
+
+      if (clickedElement.tagName === 'INPUT' && clickedElement.type === 'checkbox' && clickedElement.name === 'starter') {
+
+        if (clickedElement.checked) {
+          const value = clickedElement.getAttribute('value');
+          console.log('value', value);
+          thisBooking.starters.push(value);
+          console.log(thisBooking.starters, 'dodaj');
+        } else {
+          const value = clickedElement.getAttribute('value');
+          const indexOfFilterID = thisBooking.starters.indexOf(value);
+          thisBooking.starters.splice(indexOfFilterID, 1);
+          console.log(thisBooking.starters, 'usuń');
+        }
+      }
+    });
+
+
+    thisBooking.dom.orderButton.addEventListener('click', function(event){
+      event.preventDefault();
+      thisBooking.sendBooking();
+    });
+
+
   }
 
 }

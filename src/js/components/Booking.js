@@ -8,9 +8,13 @@ class Booking {
   constructor(wrapper) {
     const thisBooking = this;
 
+
+
     thisBooking.render(wrapper);
     thisBooking.initWidgets();
     thisBooking.getData();
+
+
 
     //console.log('thisBooking', thisBooking);
     //conosle.log('wrapper', wrapper);
@@ -79,19 +83,19 @@ class Booking {
 
     thisBooking.booked = {};
 
-    for(let item of eventsCurrent) {
+    for (let item of eventsCurrent) {
       thisBooking.makeBooked(item.date, item.hour, item.duration, item.table);
     }
-    for(let item of bookings) {
+    for (let item of bookings) {
       thisBooking.makeBooked(item.date, item.hour, item.duration, item.table);
     }
 
     const minDate = thisBooking.datePicker.minDate;
     const maxDate = thisBooking.datePicker.maxDate;
 
-    for(let item of eventsRepeat){
-      if(item.repeat == 'daily'){
-        for(let loopDate = minDate; loopDate <= maxDate; loopDate = utils.addDays(loopDate, 1)){
+    for (let item of eventsRepeat) {
+      if (item.repeat == 'daily') {
+        for (let loopDate = minDate; loopDate <= maxDate; loopDate = utils.addDays(loopDate, 1)) {
           thisBooking.makeBooked(utils.dateToStr(loopDate), item.hour, item.duration, item.table);
         }
       }
@@ -123,7 +127,7 @@ class Booking {
     }
   }
 
-  updateDOM(){
+  updateDOM() {
     const thisBooking = this;
 
     thisBooking.date = thisBooking.datePicker.value;
@@ -131,30 +135,68 @@ class Booking {
 
     let allAvailable = false;
 
-    if(
+    if (
       typeof thisBooking.booked[thisBooking.date] == 'undefined'
       ||
       typeof thisBooking.booked[thisBooking.date][thisBooking.hour] == 'undefined'
-    ){
+    ) {
       allAvailable = true;
     }
 
-    for(let table of thisBooking.dom.tables){
+    for (let table of thisBooking.dom.tables) {
       let tableId = table.getAttribute(settings.booking.tableIdAttribute);
-      if(!isNaN(tableId)){
+      if (!isNaN(tableId)) {
         tableId = parseInt(tableId);
       }
 
-      if(
+      if (
         !allAvailable
         &&
         thisBooking.booked[thisBooking.date][thisBooking.hour].includes(tableId)
-      ){
+      ) {
         table.classList.add(classNames.booking.tableBooked);
-      } else{
+      } else {
         table.classList.remove(classNames.booking.tableBooked);
       }
     }
+
+  }
+
+  initTables() {
+    const thisBooking = this;
+
+    const tablePicked = [];
+
+    thisBooking.floorPlan.addEventListener('click', function (event) {
+      const clickedElement = event.target;
+
+      if (clickedElement.classList.contains('table')) {
+
+        if (clickedElement.classList.contains('booked')) {
+          alert('Table already reserved');
+        }else {
+          for (let table of thisBooking.dom.tables) {
+            if (table.classList.contains('selected')) {
+              table.classList.remove('selected');
+            }
+            else if (clickedElement.classList.contains('selected')){
+              clickedElement.classList.remove('selected');
+              const tableId = clickedElement.getAttribute('data-table');
+              const indexOfTableID = tablePicked.indexOf(tableId);
+              tablePicked.splice(indexOfTableID, 1);
+            }
+            else {
+              clickedElement.classList.add('selected');
+              const tableId = clickedElement.getAttribute('data-table');
+              tablePicked.push(tableId);
+              console.log('tablepicked', tablePicked);
+
+            }
+          }
+        }
+      }
+    });
+
   }
 
   render(wrapper) {
@@ -185,6 +227,12 @@ class Booking {
     /*Referencja do inputu Hours Picker */
     thisBooking.dom.hourPicker = document.querySelector(select.widgets.hourPicker.wrapper);
 
+
+    thisBooking.dom.tables = thisBooking.dom.wrapper.querySelectorAll(select.booking.tables);
+
+    thisBooking.floorPlan = document.querySelector('.floor-plan');
+
+
   }
 
   initWidgets() {
@@ -196,10 +244,13 @@ class Booking {
     thisBooking.datePicker = new DatePicker(thisBooking.dom.datePicker);
     thisBooking.hourPicker = new HourPicker(thisBooking.dom.hourPicker);
 
-    thisBooking.dom.wrapper.addEventListener('updated', function(){
+    thisBooking.dom.wrapper.addEventListener('updated', function () {
       thisBooking.updateDOM();
     });
 
+    thisBooking.floorPlan.addEventListener('click', function () {
+      thisBooking.initTables();
+    });
   }
 
 }

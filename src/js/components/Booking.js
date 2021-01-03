@@ -9,11 +9,11 @@ class Booking {
     const thisBooking = this;
 
 
-
+    thisBooking.tablePicked = null;
     thisBooking.render(wrapper);
     thisBooking.initWidgets();
     thisBooking.getData();
-
+    thisBooking.initTables();
 
 
     //console.log('thisBooking', thisBooking);
@@ -165,7 +165,7 @@ class Booking {
   initTables() {
     const thisBooking = this;
 
-    const tablePicked = [];
+
 
     thisBooking.floorPlan.addEventListener('click', function (event) {
       const clickedElement = event.target;
@@ -174,23 +174,19 @@ class Booking {
 
         if (clickedElement.classList.contains('booked')) {
           alert('Table already reserved');
-        }else {
-          for (let table of thisBooking.dom.tables) {
-            if (table.classList.contains('selected')) {
+        } else {
+          if (clickedElement.classList.contains('selected')) {
+            clickedElement.classList.remove('selected');
+            thisBooking.tablePicked = null;
+            console.log('remove table2', thisBooking.tablePicked);
+          }
+          else {
+            for (let table of thisBooking.dom.tables) {
               table.classList.remove('selected');
-            }
-            else if (clickedElement.classList.contains('selected')){
-              clickedElement.classList.remove('selected');
-              const tableId = clickedElement.getAttribute('data-table');
-              const indexOfTableID = tablePicked.indexOf(tableId);
-              tablePicked.splice(indexOfTableID, 1);
-            }
-            else {
               clickedElement.classList.add('selected');
               const tableId = clickedElement.getAttribute('data-table');
-              tablePicked.push(tableId);
-              console.log('tablepicked', tablePicked);
-
+              thisBooking.tablePicked = tableId;
+              console.log('add table', thisBooking.tablePicked);
             }
           }
         }
@@ -248,9 +244,9 @@ class Booking {
       thisBooking.updateDOM();
     });
 
-    thisBooking.floorPlan.addEventListener('click', function () {
-      thisBooking.initTables();
-    });
+    //thisBooking.floorPlan.addEventListener('click', function () {
+    //thisBooking.initTables();
+    //});
   }
 
 }

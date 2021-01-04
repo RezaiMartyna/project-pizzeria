@@ -233,26 +233,51 @@ class Booking {
 
     thisBooking.dom.starters = thisBooking.dom.wrapper.querySelector(select.booking.starters);
 
+    thisBooking.dom.dateInput = document.querySelector(select.widgets.datePicker.input);
+
+    thisBooking.dom.hourInput = document.querySelector(select.widgets.hourPicker.input);
+
+    thisBooking.dom.phone = thisBooking.dom.wrapper.querySelector(select.booking.phone);
+
+    thisBooking.dom.address = thisBooking.dom.wrapper.querySelector(select.booking.address);
+
     thisBooking.starters = [];
     console.log('starter', thisBooking.starters);
   }
 
-  sendBooking(){
+  sendBooking() {
     const thisBooking = this;
 
     const url = settings.db.url + '/' + settings.db.booking;
 
+
+
     const payload = {
-      //date: data wybrana w datePickerze
-      //hour: godzina wybrana w hourPickerze (w formacie HH:ss)
-      //table: numer wybranego stolika (lub null jeśli nic nie wybrano)
-      //duration: liczba godzin wybrana przez klienta
-      //ppl: liczba osób wybrana przez klienta
+      date: thisBooking.dom.dateInput.value,
+      hour: thisBooking.dom.hourInput.value, //(w formacie HH:ss)??
+      table: thisBooking.tablePicked,
+      duration: thisBooking.hoursAmount.value,
+      ppl: thisBooking.peopleAmount.value,
       starters: [],
-      //phone: numer telefonu z formularza,
-      //address: adres z formularza
+      phone: thisBooking.dom.phone.value,
+      address: thisBooking.dom.address.value,
+    };
+    console.log('payload', payload);
+
+    for (let starter of thisBooking.starters) {
+      payload.starters.push(starter);
+    }
+    console.log('payload', payload);
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
     };
 
+    fetch(url, options)
 
 
 
@@ -277,6 +302,14 @@ class Booking {
       }
     });
 
+
+
+
+    thisBooking.dom.orderButton.addEventListener('click', function (event) {
+      event.preventDefault();
+      thisBooking.sendBooking();
+    });
+
     thisBooking.dom.starters.addEventListener('click', function (event) {
 
       const clickedElement = event.target;
@@ -288,7 +321,8 @@ class Booking {
           console.log('value', value);
           thisBooking.starters.push(value);
           console.log(thisBooking.starters, 'dodaj');
-        } else {
+        }
+        else {
           const value = clickedElement.getAttribute('value');
           const indexOfFilterID = thisBooking.starters.indexOf(value);
           thisBooking.starters.splice(indexOfFilterID, 1);
@@ -296,13 +330,6 @@ class Booking {
         }
       }
     });
-
-
-    thisBooking.dom.orderButton.addEventListener('click', function(event){
-      event.preventDefault();
-      thisBooking.sendBooking();
-    });
-
 
   }
 

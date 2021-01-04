@@ -64,10 +64,10 @@ export const select = {
     hoursAmount: '.hours-amount',
     tables: '.floor-plan .table',
     tablesAll: '.floor-plan',
-    phone: '[name="phone"]',
-    address: '[name="address"]',
+    phone: `input[name="phone"]`,
+    address: `input[name="address"]`,
     orderButton: '.btn-secondary',
-    starters: '.booking-option-title',
+    starters: '.booking-options',
   },
   nav: {
     links: '.main-nav a',

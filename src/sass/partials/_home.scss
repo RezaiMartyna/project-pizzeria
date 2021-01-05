@@ -18,10 +18,7 @@
 }
 
 .info-card:hover .orderOnline{
-  position: absolute;
-  top:-20px;
-  left: -10px;
-  width: 120px;
+  margin: -10px 0 0;
   transition: .5s ease;
   text-decoration: none;
   color: pink;
@@ -31,28 +28,33 @@
   text-decoration: none;
   color: white;
   font-size: large;
-  transition: .5s ease
+  transition: .5s ease;
+  margin: 0;
 }
 
 .info-card:hover .hover-text{
   opacity: 1;
   transition: .5s ease;
+  margin: 0;
 }
+
 .hover-text{
   color: white;
   opacity: 0;
+  transition: .5s ease-in-out;
+  margin: 10px 0 0 ;
 }
 
 .bookAtable {
   text-decoration: none;
   color: white;
   font-size: large;
-  transition: .5s ease
+  transition: .5s ease;
 }
 
 .info-card:hover .bookAtable{
   position: absolute;
-  top:-20px;
+  top: -20px;
   left: -10px;
   width: 120px;
   transition: .5s ease;
@@ -70,13 +72,10 @@
 
 * { box-sizing: border-box; }
 
-
-
 .main-carousel {
   background: #FAFAFA;
   margin-top: 100px;
   margin-bottom: 100px;
-
 }
 
 .carousel-cell {
@@ -93,14 +92,13 @@
   width: 200px;
   height: 200px;
   margin-left: 20px;
-  margin-right:20px;
+  margin-right: 20px;
 }
 
 .carousel-text {
   background: white;
   padding-left: 20px;
   margin-top: 20px;
-
 }
 
 //gallery
@@ -114,27 +112,25 @@
 .gallery:hover .heart {
   color: red;
   opacity: 1;
-
 }
 
 .gallery .share  {
-  color:white;
+  color: white;
   opacity: 0;
   transition: all 1s ease-in-out;
 }
 
 .gallery:hover .share  {
-  color:red;
+  color: red;
   opacity: 1;
-
 }
 
 .gallery:hover img {
   opacity: 0.3;
-    transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 
 .seeMore{
-  color:red;
+  color: red;
   padding-bottom: 50px;
 }

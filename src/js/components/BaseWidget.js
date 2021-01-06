@@ -1,5 +1,5 @@
 
- export class BaseWidget{
+class BaseWidget{
   constructor(wrapperElement, initialValue){
     const thisWidget = this;
 
@@ -62,5 +62,4 @@
     thisWidget.dom.wrapper.dispatchEvent(event);
   }
 }
-
-//export default BaseWidget;
+export default BaseWidget;
